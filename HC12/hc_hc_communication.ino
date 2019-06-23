@@ -28,14 +28,20 @@ void loop()
   start = HC12.read();
   if(start == 's') { 
      delay(1000);
-   HC12.print(init);
+ HC12.print(init);
+ delay(1000);
  HC12.print(bat);
  delay(1000);
-  HC12.print(latt);
-  HC12.print(longt);
-  HC12.print(longt);
-  HC12.print(weight);
-  HC12.print(stat);
-  HC12.print(fim);
+ HC12.print(latt);
+ delay(1000);
+ HC12.print(longt);
+ delay(1000);
+ HC12.print(longt);
+ delay(1000);
+ HC12.print(weight);
+ delay(1000);
+ HC12.print(stat);
+ delay(1000);
+ HC12.print(fim);
+ delay(1000);
   HC12.println();}}
-
