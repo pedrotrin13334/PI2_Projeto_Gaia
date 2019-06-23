@@ -38,6 +38,8 @@ void loop()
  delay(1000);
  HC12.print(longt);
  delay(1000);
+ HC12.print(cap);
+ delay(1000);
  HC12.print(weight);
  delay(1000);
  HC12.print(stat);
