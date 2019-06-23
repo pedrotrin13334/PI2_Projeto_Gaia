@@ -27,8 +27,8 @@ void loop()
  char fim ='X'; 
   start = HC12.read();
   if(start == 's') { 
-     delay(1000);
-   HC12.print(init);
+  delay(1000);
+  HC12.print(init);
  HC12.print(bat);
  delay(1000);
   HC12.print(latt);
