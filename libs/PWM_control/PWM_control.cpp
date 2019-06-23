@@ -12,7 +12,7 @@ PWM_control::PWM_control(void)
    pinMode(PWM_right_pin,OUTPUT);
    pinMode(PWM_left_pin,OUTPUT); //initiates all used pins as output
    pinMode(inversion_right_pin,OUTPUT);
-   pinMode(inversion_right_pin,OUTPUT);
+   pinMode(inversion_left_pin,OUTPUT);
    boat_state = idle;
 }
 
@@ -25,8 +25,8 @@ void PWM_control::PWM_go_forwards(int PWM_value)
      digitalWrite(inversion_right_pin,LOW); 
      digitalWrite(inversion_left_pin,LOW); //puts both motors  in  foward direction
   }
-  digitalWrite(PWM_right_pin, PWM_value); //rights the PWM value to make the motors work
-  digitalWrite(PWM_left_pin, PWM_value);
+  analogWrite(PWM_right_pin, PWM_value); //rights the PWM value to make the motors work
+  analogWrite(PWM_left_pin, PWM_value);
   boat_state = going_forwards;
 }
 
@@ -39,8 +39,8 @@ void PWM_control::PWM_go_backwards(int PWM_value)
      digitalWrite(inversion_right_pin,HIGH); 
      digitalWrite(inversion_left_pin,HIGH); 
  }
-  digitalWrite(PWM_right_pin, PWM_value);
-  digitalWrite(PWM_left_pin, PWM_value);
+  analogWrite(PWM_right_pin, PWM_value);
+  analogWrite(PWM_left_pin, PWM_value);
   boat_state = going_backwards; 
 }
 
@@ -73,7 +73,7 @@ void PWM_control:: PWM_turn(int PWM_value, bool direction)
          boat_state = turning_right;
      }
 
-  digitalWrite(PWM_right_pin, PWM_value);
-  digitalWrite(PWM_left_pin, PWM_value);
+  analogWrite(PWM_right_pin, PWM_value);
+  analogWrite(PWM_left_pin, PWM_value);
 }
 
