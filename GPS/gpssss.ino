@@ -2,8 +2,8 @@
 #include <SoftwareSerial.h>
 
 // Choose two Arduino pins to use for software serial
-int RXPin = 2;
-int TXPin = 3;
+int RXPin = D8;
+int TXPin = D7;
 
 int GPSBaud = 9600;
 
@@ -28,13 +28,13 @@ void loop()
   while (gpsSerial.available() > 0)
     if (gps.encode(gpsSerial.read()))
       displayInfo();
-
   // If 5000 milliseconds pass and there are no characters coming in
   // over the software serial port, show a "No GPS detected" error
   if (millis() > 5000 && gps.charsProcessed() < 10)
   {
     Serial.println("No GPS detected");
-    while(true);
+    delay(1000);
+    //while(true);
   }
 }
 
