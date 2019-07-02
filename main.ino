@@ -1,4 +1,5 @@
 #include <SoftwareSerial.h>
+#include<water_level_control.h>
 
 SoftwareSerial HC12(D4, D3); // HC-12 TX Pin, HC-12 RX Pin
 char start;
@@ -22,7 +23,7 @@ void loop()
   unsigned int bat = analogRead(A0); //4.0V = 0x0333
   //latt = gps_lat();
   //longt = gps_long();
-  unsigned int weight =50;
+  unsigned int weight = water_level();
   unsigned int cap = ultrasonic_reading();
  char fim ='X'; 
   start = HC12.read();
@@ -84,3 +85,15 @@ distance_= duration*0.034/2;
   return sensorValue;
 }
 
+int water_level() {
+  WaterLevel level_sensor;
+  // put your main code here, to run repeatedly:
+   if(level_sensor.check_status())
+   {
+    return 0;
+   }
+   else
+   {
+    return 1;
+   }
+}
