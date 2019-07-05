@@ -3,8 +3,8 @@
 
 SoftwareSerial HC12(D4, D3); // HC-12 TX Pin, HC-12 RX Pin
 char start;
-double latt;
-double longt;                    // using a constant String
+String readString;
+
 unsigned long int pmillis;
 void setup()
 {
@@ -14,37 +14,48 @@ void setup()
 }
 
 void loop()
-{
+{  
+  while (HC12.available()) {
+    delay(10);  //small delay to allow input buffer to fill
+
+    char c = HC12.read();  //gets one byte from serial buffer
+    if (c == ',') {
+      break;
+    }  //breaks out of capture loop to print readstring
+    readString += c; 
+  } //makes the string readString  
+
+//  if (readString.length() >0)
+//    Serial.println(readString); //prints string to serial port out
+   readString=""; //clears variable for new input
+  
   while (millis() - pmillis < 1000)
     ;
   pmillis = millis();
   char init= 'I';
-  char stat = 'o';
-  unsigned int bat = analogRead(A0); //4.0V = 0x0333
+  char fim ='X';
+  int cap = ultrasonic_reading();
+  delay(100);
+  //esp_rasp_communication(cap);
+  //delay(100);
   //latt = gps_lat();
   //longt = gps_long();
-  unsigned int weight = water_level();
-  unsigned int cap = ultrasonic_reading();
- char fim ='X'; 
+  // int weight = water_level(); 
   start = HC12.read();
   if(start == 's') { 
-     delay(1000);
+     delay(100);
  HC12.print(init);
- delay(1000);
- HC12.print(bat);
- delay(1000);
- HC12.print(latt);
- delay(1000);
- HC12.print(longt);
- delay(1000);
+ delay(100);
  HC12.print(cap);
- delay(1000);
- HC12.print(weight);
- delay(1000);
- HC12.print(stat);
- delay(1000);
+ delay(100);
+// HC12.print(latt);
+// delay(500);
+// HC12.print(longt);
+// delay(500);
+// HC12.print(weight);
+// delay(500);
  HC12.print(fim);
- delay(1000);
+ delay(100);
   HC12.println();}}
 
 int ultrasonic_reading(){
@@ -72,16 +83,19 @@ delayMicroseconds(10);
 digitalWrite(trigPin, LOW);
 duration = pulseIn(echoPin, HIGH);
 distance_= duration*0.034/2;
+        delay(100);
     if (distance_ == distance)
       {
-        delay(100);
+        delay(5);
         sensorValue = distance_;
       }
     if(sensorValue >2000){
-      sensorValue =0;
+      sensorValue =2000;
     }}
-  distance = 0;
-  distance_ = 0;
+    delay(1000);
+//  distance = 0;
+//  distance_ = 0;
+  Serial.println(sensorValue);
   return sensorValue;
 }
 
@@ -97,3 +111,13 @@ int water_level() {
     return 1;
    }
 }
+
+void esp_rasp_communication(int n) {
+  // put your setup code here, to run once:
+Serial.begin(9600);
+  if(Serial. available());{
+    Serial.println(n);
+  }
+return;
+}
+
