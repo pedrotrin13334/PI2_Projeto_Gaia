@@ -3,7 +3,7 @@
 
 #define SINKING true 
 #define NOT_SINKING false
-#define sensor_pin 16
+#define sensor_pin A0
 
 WaterLevel::WaterLevel(void)
 { pinMode(sensor_pin, INPUT);
@@ -11,16 +11,14 @@ WaterLevel::WaterLevel(void)
 
 bool WaterLevel::check_status()
 {  
-   value1 = digitalRead(sensor_pin);
-   delay(10);
-   value2 = digitalRead(sensor_pin);
+   value1 = analogRead(sensor_pin);
 
-   if(value1 != value2)
+   if(value1 > 500)
    {
-      this->check_status();
+      return 1; 
    }
    else
    { 
-      return value1; 
+      return 0; 
    }
 }

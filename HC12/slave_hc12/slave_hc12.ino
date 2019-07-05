@@ -1,7 +1,7 @@
 #include<SoftwareSerial.h>
-#define LED 13
+#define LED 2
 char teste;
-SoftwareSerial HC12(12,11);
+SoftwareSerial HC12(4,5);
 void setup() {
   // put your setup code here, to run once:
   HC12.begin(9600);
@@ -15,12 +15,12 @@ void loop() {
   while(HC12.available())
   { teste = HC12.read();
     if(teste == 't') 
-      { digitalWrite(13,HIGH);
+      { digitalWrite(LED,HIGH);
       }
     
       if(teste == 'o')
       {
-        digitalWrite(13,LOW);
+        digitalWrite(LED,LOW);
       }
       Serial.println(teste);
   }

@@ -1,6 +1,6 @@
 #include<SoftwareSerial.h>
 
-SoftwareSerial HC12(12,11);
+SoftwareSerial HC12(4,5);
 char teste;
 void setup() {
   // put your setup code here, to run once:
