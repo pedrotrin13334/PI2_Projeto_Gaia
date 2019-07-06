@@ -43,7 +43,7 @@ PWM_control motors;
 //MPU 
 MPU9250 mpu;
 
-String readString;
+String read_String;
 
 void setup()
 {
@@ -70,8 +70,7 @@ void loop()
 //  if (readString.length() >0)
 //    Serial.println(readString); //prints string to serial port out
   
-  while (millis() - pmillis < 1000)
-    ;
+  while (millis() - pmillis < 1000);
   pmillis = millis();
   char init= 'I';
   char fim ='X';
@@ -81,10 +80,11 @@ void loop()
   double boat_angle;
   double ref_angle;
   int go;
+  int last_go = 0;
   ultrassound_dist = String(cap);
   boat_weight = String(weight);
- 
- if(is_first_message)
+
+  if(is_first_message)
   { get_first_locations();
     lat_min = first_loc[0];
     lon_min = first_loc[1];
@@ -99,23 +99,37 @@ void loop()
    }
   else
   {  received_message = rasp_communication();
-     string_split(received_message);
+     //string_split(received_message);
      
      ref_angle = split_string[3].toFloat();
      go = split_string[0].toInt();
      latt = split_string[1].toFloat();
      longt =  split_string[2].toFloat();
-     if(go)
-     {
+     if(last_go == go)
+     {   
+        if(go)
+        {
          motors.PWM_go_forwards(1);
+        }
+        else
+        { int init_time = millis();
+          while(!reached_angle && millis() - init_time < 50)
+          { boat_angle = get_angle();
+            boat_dir = String(boat_angle, 2);
+            reached_angle = move_angle(ref_angle,boat_angle);
+          } 
+        }
      }
      else
      {
-        while(reached_angle)
-        { boat_angle = get_angle();
-          boat_dir = String(boat_angle, 2);
-          reached_angle = move_angle(ref_angle,boat_angle);
-        }
+       if(go)
+       {
+         motors.PWM_go_forwards(1);
+       }
+       else
+       {
+        motors.PWM_go_forwards(0);
+       }
      }
   }
   delay(100);
@@ -125,11 +139,31 @@ void loop()
   //longt = gps_long();
   // int weight = water_level(); 
   start = HC12.read();
-  if(start == 's') { 
+  if(start == 's') {
+    received_char = Serial.read();
+    switch(received_char)
+    {   case '1': 
+        motors.PWM_go_forwards(1);
+        break;
+
+        case '2': 
+        motors.PWM_turn(LEFT);
+        break;
+
+         case '3': 
+        motors.PWM_turn(RIGHT);
+
+        break;
+
+        case '4': 
+        motors.PWM_go_forwards(0);
+     
+        break;
+          
+    } 
      delay(100);
  HC12.print(init);
  delay(100);
- 
  HC12.print(cap);
  delay(100);
  HC12.print(weight);
@@ -140,7 +174,10 @@ void loop()
  delay(100);
  HC12.print(fim);
  delay(100);
-  HC12.println();}}
+  HC12.println();
+
+  
+  }}
 
 int ultrasonic_reading(){
 const int trigPin = D6;
@@ -254,9 +291,9 @@ char* rasp_communication()
 
 
 void get_first_locations()
-{ int num_of_loc = 0;
-   while(num_of_loc <4)
-   {
+{ //int num_of_loc = 0;
+   //while(num_of_loc <4)
+   //{
       while (HC12.available()) 
       {
           delay(10);  //small delay to allow input buffer to fill
@@ -265,12 +302,14 @@ void get_first_locations()
           if (c == ',') {
             break;
           }  //breaks out of capture loop to print readstring
-          readString += c; 
+          read_String += c; 
       } //makes the string readString 
-    first_loc[num_of_loc] = readString;
-    readString = "";
-    num_of_loc += 1;
+    //first_loc[num_of_loc] = read_String;
+    read_String = "";
+    //num_of_loc += 1;
    }
+
+   HC12.println("Received");
 }
 
 void string_split(char* received_string)
